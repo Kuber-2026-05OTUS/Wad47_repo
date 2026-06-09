@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: homework-web-server
+  namespace: homework
+  labels:
+    app: homework-server
+spec:
+  #временное хранилище
+  volumes:
+    - name: shared-volume
+      emptyDir: {}
+  #init-контейнер
+  initContainers:
+    - name: init-homework-server
+      image: busybox:1.28
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          mkdir -p /init
+          echo "<html><head><title>Homework-WEB</title></head><body><h1>Hello from homework container! - Привет от контенера в поде homework-web-server, в пространстве имен homework!!</h1></body></html>" > /init/index.html
+      volumeMounts:
+        - name: shared-volume
+          mountPath: /init #монтируем в директорию
+  #контейнер вэб сервера
+  containers:
+    - name: web-server
+      #image: nginx:1.14.2
+      image: nginx:latest
+      #image: nginx:alpine
+      ports:
+        - containerPort: 8000
+      volumeMounts:
+        - name: shared-volume
+          mountPath: /homework #монтируем в директорию
+      # Создаем символическую ссылку с /homework на стандартную директорию раздачи Nginx или настраиваем его конфиг
+      # Переопределяем порт Nginx на 8000
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          echo 'server {
+            listen 8000;
+            server_name localhost;
+            location / {
+                root /homework;
+                index index.html index.htm;
+            }
+          }' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'
+      lifecycle:
+        # Удаляем файл index.html перед завершением пода
+        preStop:
+          exec:
+            command: ["/bin/sh", "-c", "rm -rf /homework/index.html"]
