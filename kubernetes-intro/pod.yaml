@@ -14,11 +14,24 @@ spec:
   initContainers:
     - name: init-homework-server
       image: busybox:1.28
+      env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName      
       command: ["/bin/sh", "-c"]
       args:
         - |
           mkdir -p /init
-          echo "<html><head><title>Homework-WEB</title></head><body><h1>Hello from homework container! - Привет от контенера в поде homework-web-server, в пространстве имен homework!!</h1></body></html>" > /init/index.html
+          echo "<html><head><title>Homework-WEB</title></head><body><h1>Hello from homework container! - Привет от контенера в поде POD $(MY_POD_NAME) на ноде $(MY_NODE_NAME), в пространстве имен $(MY_POD_NAMESPACE)!!</h1></body></html>" > /init/index.html
       volumeMounts:
         - name: shared-volume
           mountPath: /init #монтируем в директорию
