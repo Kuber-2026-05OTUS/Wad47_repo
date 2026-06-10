@@ -1,0 +1,32 @@
+# сменить папку
+cd "D:\Обучение\OTUS\<Инфраструктурная платформа на основе Kubernetes>\repository\Wad47_repo\kubernetes-intro\"
+cd "D:\Обучение\OTUS\<Инфраструктурная платформа на основе Kubernetes>\repository\Wad47_repo\kubernetes-controllers\"
+
+# создать нэмспейс/под/деплой
+kubectl create -f .\pod.yaml
+kubectl create -f .\deployment.yaml
+
+# удалить нэмспейс/под/деплой
+kubectl delete -f .\pod.yaml
+kubectl delete -f .\deployment.yaml
+
+# Вывести список текущих пространств имен в кластере:
+kubectl get namespace
+
+# Задать текущее пространство имен (для всех команд kubectl далее).
+kubectl config set-context --current --namespace=homework
+
+# Вывести все поды во всех пространств имён
+kubectl get pods --all-namespaces
+
+# Вывести все поды <namespace-name> пространства имён
+kubectl get pods --namespace=homework
+
+# Вывести все поды в текущем пространстве имён с подробностями
+kubectl get pods -o wide
+
+# Выполнить проброс пока работает команда (выход ctrl-C)
+kubectl port-forward --address 0.0.0.0 pod/homework-web-server 8001:8000 
+
+# Просмотреть страницу пода 
+curl 10.42.0.10:8000
