@@ -22,6 +22,9 @@ spec:
       labels:
         app: homework-server
     spec:
+      # Запуск подов на нодах с определенной меткой 
+      nodeSelector:
+        homework: "true"    # Указываем метку и её значение 
       #временное хранилище
       volumes:
         - name: shared-volume

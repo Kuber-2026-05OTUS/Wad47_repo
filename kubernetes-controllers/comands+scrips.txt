@@ -2,6 +2,12 @@
 cd "D:\Обучение\OTUS\<Инфраструктурная платформа на основе Kubernetes>\repository\Wad47_repo\kubernetes-intro\"
 cd "D:\Обучение\OTUS\<Инфраструктурная платформа на основе Kubernetes>\repository\Wad47_repo\kubernetes-controllers\"
 
+#Посмотреть текущие метки ноды
+kubectl get nodes --show-labels
+
+# Добавить ноде vmi3127018 метку с ключом homework и значением true (для изменения добавьте флаг --overwrite)
+kubectl label node vmi3127018 homework=true
+
 # создать нэмспейс/под/деплой
 kubectl create -f .\pod.yaml
 kubectl create -f .\deployment.yaml
